@@ -6,8 +6,7 @@ from csv import reader
 sc = SparkContext(appName="hw2")
 sc.setLogLevel("ERROR")
 
-# Read data from HDFS or local path
-# Replace path as needed
+# Read data from HDFS
 data = sc.textFile("hdfs://group14-1:54310/hw1-input/")
 
 # Parse CSV safely
@@ -22,9 +21,9 @@ splitdata = splitdata.filter(lambda x: len(x) > 13 and x[13] != "BORO_NM")
 BOROS = ("BRONX", "BROOKLYN", "MANHATTAN", "QUEENS", "STATEN ISLAND")
 
 # Extract borough and count
-def get_boro(row):
+def get_boro(row1):
     try:
-        boro = row[13].strip().upper()
+        boro = row1[13].strip().upper()
         if boro in BOROS:
             return (boro, 1)
     except:
@@ -42,4 +41,5 @@ most_crime = boro_counts.takeOrdered(1, key=lambda x: -x[1])[0]
 
 print("RESULT\t{}\t{}".format(most_crime[0], most_crime[1]))
 
+# Stop SparkContext
 sc.stop()
